@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    UICollectionViewFlowLayout* layout = [[UICollectionViewFlowLayout alloc] init];
+    [layout setItemSize:CGSizeMake(20, 20)];
+    [layout setMinimumInteritemSpacing:0.0f];
+    [layout setMinimumLineSpacing:0.0f];
+    MainViewController* mainvc = [[MainViewController alloc] initWithCollectionViewLayout:layout];
+    [mainvc.collectionView setBackgroundColor:[UIColor whiteColor]];
+    [self.window setRootViewController:mainvc];
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
