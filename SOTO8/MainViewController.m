@@ -68,17 +68,47 @@ static CGSize AssetGridThumbnailSize;
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     [self.imageManager requestImageForAsset:self.assetsFetchResults[indexPath.item] 
-                                 targetSize:CGSizeMake(20, 20) 
+                                 targetSize:((UICollectionViewFlowLayout *)self.collectionViewLayout).itemSize
                                 contentMode:PHImageContentModeAspectFill 
                                     options:nil resultHandler:^(UIImage *result, NSDictionary* info){
                                         
                                         UIImageView* imgView = (UIImageView*)[cell.contentView viewWithTag:999];
+                                        BOOL willAnimate = NO;
                                         if(!imgView) {
                                             imgView = [[UIImageView alloc] initWithFrame:[cell.contentView bounds]];
                                             imgView.tag = 999;
                                             [cell.contentView addSubview:imgView];
+                                            willAnimate = YES;
                                         }
-                                        imgView.image = result;
+                                            float randomNum = ((float)rand() / RAND_MAX) * 2;     
+                                        int animationKey = arc4random_uniform(4);
+                                        UIViewAnimationOptions option = UIViewAnimationOptionTransitionFlipFromLeft;
+                                        switch (animationKey) {
+                                            case 0:
+                                                option = UIViewAnimationOptionTransitionFlipFromLeft;
+                                                break;
+                                            case 2:
+                                                option = UIViewAnimationOptionTransitionFlipFromRight;
+                                                break;
+                                            case 3:
+                                                option = UIViewAnimationOptionTransitionFlipFromTop;
+                                                break;
+                                            case 4:
+                                                option = UIViewAnimationOptionTransitionFlipFromBottom;
+                                                break;
+                                                
+                                            default:
+                                                break;
+                                        }
+                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(randomNum * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [UIView transitionWithView:cell.contentView 
+                                                              duration:0.5f options:option
+                                                            animations:^{
+                                                                imgView.image = result;  
+                                                            }completion:^(BOOL finished){
+                                                                imgView.image = result;     
+                                                            }];                                                                                        
+                                        });
                                     }];
     // Configure the cell
     
